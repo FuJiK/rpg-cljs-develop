@@ -1,0 +1,17 @@
+{:tiles
+ [[-5 3 5] [-4 3 3] [-3 3 2] [-2 3 1] [-1 3 0] [0 3 3] [1 3 3] [2 3 3] [3 3 3] [4 3 3] [5 3 3]
+  [-2 1 1] [-1 1 1] [0 1 1] [1 1 1] [2 1 1]  [2 1 1]
+  [4 -2 2] [4 -1 2] [4 0 2] [4 1 2] ]
+ :events
+ [{:pos [0 0]
+   :event {:id :event/hello :once? false
+           :script [[:say "村人" "EDNから読み込んだオーバーワールドです。"]
+                    [:say "村人" "右は水辺、上は別のエリアへワープできます。"]]}}
+  {:pos [2 0]
+   :event {:id :chest-001 :once? true
+           :script [[:chest :chest-001 {:item :potion :count 1}]]}}
+  {:pos [-3 0]
+   :event {:id :warp/field :once? false
+           :script [[:say "案内板" "↑で別エリアへワープ"]
+                    [:warp 10 10]
+                    [:say "SYSTEM" "別エリアに到着した。"]]}}]}

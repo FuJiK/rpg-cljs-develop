@@ -1,0 +1,14 @@
+{
+  "name": "rpg-cljs",
+  "private": true,
+  "devDependencies": {
+    "shadow-cljs": "^2.28.15"
+  },
+  "scripts": {
+    "watch": "shadow-cljs watch app",
+    "build": "shadow-cljs release app",
+    "test:node": "shadow-cljs run shadow.cljs.build-report app build-report.html && shadow-cljs compile node-test && node out/node-test.js",
+    "test:browser:watch": "shadow-cljs watch browser-test",
+    "test:browser:once": "shadow-cljs compile browser-test"
+  }
+}

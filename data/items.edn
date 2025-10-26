@@ -1,0 +1,4 @@
+[
+  {:id :potion :name "ポーション" :desc "HPを30回復する" :effect {:heal 30}}
+  {:id :hi-potion :name "ハイポーション" :desc "HPを100回復する" :effect {:heal 100}}
+]

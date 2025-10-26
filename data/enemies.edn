@@ -1,0 +1,4 @@
+[
+  {:id :slime :name "スライム" :hp 12 :attack 3 :exp 2 :drop [:potion 0.25]}
+  {:id :goblin :name "ゴブリン" :hp 20 :attack 5 :exp 4 :drop [:potion 0.10]}
+]
