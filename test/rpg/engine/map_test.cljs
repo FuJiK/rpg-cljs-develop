@@ -1,33 +1,35 @@
 (ns rpg.engine.map-test
   (:require [cljs.test :refer [deftest is testing use-fixtures]]
             [rpg.engine.state :as S]
-            [rpg.engine.map :as M]))
+            [rpg.engine.map :as M]
+            [rpg.test-util :as TU]))
 
-(use-fixtures :each
-  (fn [f]
-    (reset! S/state {:player {:x 0 :y 0 :dir :down}
-                     :map {}
-                     :solid-tiles #{1 2}
-                     :events {}
-                     :opened #{}
-                     :camera {:x 0 :y 0}
-                     :keys #{}
-                     :dialog {:open? false :queue []}
-                     :inventory {}
-                     :items-by-id {}
-                     :enemies-by-id {}
-                     :rng (random-uuid)})
-    (f)))
+(use-fixtures :each (fn [f] (TU/reset-state!) (f)))
 
-(deftest movement-and-collision
-  (testing "free tile movement"
-    (swap! S/state assoc :keys #{:right})
-    (M/try-move!)
-    (is (= 1 (get-in @S/state [:player :x])))
-    (is (= 0 (get-in @S/state [:player :y]))))
-  (testing "collision with solid tile"
-    (M/set-tile! [2 0] 1) ;; 岩
-    (swap! S/state assoc :keys #{:right})
-    (M/try-move!) ;; 1 -> 2 に進もうとするがブロック
-    (M/try-move!)
-    (is (= 1 (get-in @S/state [:player :x]))))
+(deftest ensure-generated-defaults-to-grass
+  (is (= 0 (M/get-tile [99 99])))
+  (M/ensure-generated! [99 99])
+  (is (= 0 (M/get-tile [99 99]))))
+
+(deftest collides-on-solid-tiles
+  (M/set-tile! [1 0] 1)
+  (is (M/collides? [1 0]))
+  (is (not (M/collides? [0 0]))))
+
+(deftest try-start-move-on-free-tile
+  (swap! S/state assoc :keys #{:right})
+  (M/try-start-move!)
+  (is (:active? (:anim @S/state)))
+  (is (= [0 0] (:from (:anim @S/state))))
+  (is (= [1 0] (:to (:anim @S/state)))))
+
+(deftest try-start-move-blocked-by-solid
+  (M/set-tile! [1 0] 1)
+  (swap! S/state assoc :keys #{:right})
+  (M/try-start-move!)
+  (is (not (:active? (:anim @S/state))))
+  (is (= 0 (get-in @S/state [:player :x]))))
+
+(deftest next-pos-by-direction
+  (is (= [1 0] (M/next-pos {:x 0 :y 0} :right)))
+  (is (= [0 1] (M/next-pos {:x 0 :y 0} :down))))
