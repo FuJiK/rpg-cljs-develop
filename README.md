@@ -6,6 +6,8 @@
 - セーブ／ロード（`localStorage`）
 - ユニットテスト（Node）＋ブラウザ結合テスト（shadowのbrowser-test）
 
+詳細なアーキテクチャ説明は [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) を参照してください。
+
 ## 動かし方
 
 ### 1) 前提
