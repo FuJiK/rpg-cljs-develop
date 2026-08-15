@@ -37,7 +37,15 @@ npm run build
 - 純ロジック（Node）
 ```bash
 npm run test:node
+# または build-report を省略する場合
+npx shadow-cljs compile node-test && node out/node-test.js
 ```
+  - `test/rpg/data/edn_data_test.cljs` — コミット済み EDN の Malli 検証
+  - `test/rpg/integration/smoke_test.cljs` — 実 EDN 読み込み + 静的アセット確認
+  - `test/rpg/engine/storage_test.cljs` — localStorage セーブ／ロード
+  - `test/rpg/engine/events_test.cljs` — イベント DSL（宝箱・付与・ワープ）
+  - `test/rpg/engine/map_test.cljs` — 移動開始・当たり判定
+  - `test/rpg/scenes/loader_test.cljs` — ローダー（fetch モック）
 - ブラウザ結合（起動してHTMLを開く）
 ```bash
 npm run test:browser:watch
