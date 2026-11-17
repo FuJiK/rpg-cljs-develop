@@ -33,7 +33,17 @@ npx http-server -p 8080
 npm run build
 ```
 
-### 5) テスト
+### 5) CI（GitHub Actions）
+
+`pull_request` / `main` への push で [`.github/workflows/ci.yml`](.github/workflows/ci.yml) が動きます。
+
+- `npm run test:ci` — Node 上のエンジン・EDN・マップ切替テスト
+- `npm run build` — 本番ビルド
+- ゲーム起動に必要な静的ファイルの存在チェック
+
+キー入力や Canvas のブラウザ E2E は未含み（Playwright 等で拡張可能）。
+
+### 6) テスト
 - 純ロジック（Node）
 ```bash
 npm run test:node
@@ -52,7 +62,7 @@ npm run test:browser:watch
 # out/browser-test/index.html をブラウザで開く
 ```
 
-### 6) REPL駆動開発について
+### 7) REPL駆動開発について
 - REPLを起動する際には、以下の手順
 
 ```bash

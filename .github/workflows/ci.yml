@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit-and-build:
+    name: ClojureScript tests and production build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Node tests (engine, EDN, map switch)
+        run: npm run test:ci
+
+      - name: Production build
+        run: npm run build
+
+      - name: Verify game entry assets
+        run: |
+          test -f index.html
+          test -f js/main.js
+          test -f data/maps/masara.edn
+          test -f data/maps/route1.edn
+          test -s js/main.js
+          node -e "const fs=require('fs'); const h=fs.readFileSync('index.html','utf8'); if(!/id=\"game\"/.test(h)||!/js\\/main\\.js/.test(h)) process.exit(1);"
