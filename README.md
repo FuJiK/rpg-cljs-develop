@@ -63,6 +63,11 @@ npm run test:browser:watch
 ```
 
 ### 7) REPL駆動開発について
+
+詳細とトラブルシュートは [docs/REPL.md](docs/REPL.md) を参照してください。
+
+**要点:** `watch` → **shadow の HTTP URL をブラウザで開く** → `npm run repl`。この順を守らないと `No available JS runtime.` になります。
+
 - REPLを起動する際には、以下の手順
 
 ```bash
@@ -92,9 +97,9 @@ shadow-cljs - watching build :app
 ```
 - 続いて、ブラウザを起動
 
-http://localhost:9631
+watch ログに出る **HTTP server available at http://localhost:…** の URL をブラウザで開いてください（既定は 9630。使用中なら 9631 など別ポート）。
 
-をブラウザで開いておいてください（shadow-cljs.edn の :http-port に合わせる）。
+`npx http-server` や `file://` では REPL ランタイムは繋がりません。
 
 → ここで初めて「JS runtime（ブラウザ）」が REPL に接続されます。
 
