@@ -8,6 +8,7 @@
     "watch": "shadow-cljs watch app",
     "build": "shadow-cljs release app",
     "test:node": "shadow-cljs run shadow.cljs.build-report app build-report.html && shadow-cljs compile node-test && node out/node-test.js",
+    "test:ci": "shadow-cljs compile node-test && node out/node-test.js",
     "test:browser:watch": "shadow-cljs watch browser-test",
     "test:browser:once": "shadow-cljs compile browser-test"
   }
