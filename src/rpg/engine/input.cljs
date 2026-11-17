@@ -1,5 +1,6 @@
 (ns rpg.engine.input
   (:require [rpg.engine.state :as S]
+            [rpg.engine.dialog :as D]
             [clojure.string :as str]))
 
 ;; OS/ブラウザ差で揺れる key / code / keyCode すべてを吸収
@@ -27,7 +28,13 @@
   (when-let [kw (event->kw e)]
     ;; スクロール等を止める（特に Space / Arrow）
     (.preventDefault e)
-    (swap! S/state update :keys (fn [ks] (if pressed? (conj ks kw) (disj ks kw))))))
+    (when (and pressed? (= kw :accept))
+      (when (get-in @S/state [:dialog :open?])
+        (D/advance!)))
+    (swap! S/state update :keys (fn [ks]
+                                  (if pressed?
+                                    (if (= kw :accept) ks (conj ks kw))
+                                    (disj ks kw))))))
 
 (defn attach! []
   ;; passive:false で preventDefault を確実に効かせる
