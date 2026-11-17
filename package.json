@@ -6,6 +6,7 @@
   },
   "scripts": {
     "watch": "shadow-cljs watch app",
+    "repl": "shadow-cljs cljs-repl app",
     "build": "shadow-cljs release app",
     "test:node": "shadow-cljs run shadow.cljs.build-report app build-report.html && shadow-cljs compile node-test && node out/node-test.js",
     "test:ci": "shadow-cljs compile node-test && node out/node-test.js",
