@@ -1,9 +1,8 @@
 (ns rpg.data.loader
   (:require [cljs.reader :as rdr]
-            [rpg.data.spec :as S]
+            [rpg.data.spec :as Spec]
             [rpg.engine.state :as EState]
-            [rpg.engine.map :as M]
-            [rpg.engine.events :as EV]))
+            [rpg.engine.world :as W]))
 
 (defn- fetch-edn! [path]
   (-> (js/fetch path)
@@ -15,29 +14,33 @@
 (defn load-items! []
   (-> (fetch-edn! "/data/items.edn")
       (.then (fn [items]
-               (S/validate! S/Items items "Items")
+               (Spec/validate! Spec/Items items "Items")
                (swap! EState/state assoc :items-by-id (into {} (map (juxt :id identity) items)))
                items))))
 
 (defn load-enemies! []
   (-> (fetch-edn! "/data/enemies.edn")
       (.then (fn [enemies]
-               (S/validate! S/Enemies enemies "Enemies")
+               (Spec/validate! Spec/Enemies enemies "Enemies")
                (swap! EState/state assoc :enemies-by-id (into {} (map (juxt :id identity) enemies)))
                enemies))))
 
-(defn apply-map! [m]
-  (S/validate! S/MapDoc m "MapDoc")
-  (doseq [[x y tid] (:tiles m)] (M/set-tile! [x y] tid))
-  (doseq [{:keys [pos event]} (:events m)]
-    (let [[x y] pos]
-      (S/validate! S/MapEvent event "MapEvent")
-      (EV/register! x y event))))
+(defn load-map! [name] (W/load-map! name))
 
-(defn load-map! [name]
-  (-> (fetch-edn! (str "/data/maps/" name ".edn"))
-      (.then (fn [m] (apply-map! m) m))))
+(defn change-map! [name x y] (W/change-map! name x y))
+
+(defn reset-map-layer! [] (W/reset-map-layer!))
+
+(defn apply-map! [m map-id] (W/apply-map! m map-id))
 
 (defn load-all! []
-  (-> (js/Promise.all #js [(load-items!) (load-enemies!) (load-map! "overworld")])
-      (.then (fn [_] true))))
+  (-> (js/Promise.all #js [(load-items!) (load-enemies!)])
+      (.then (fn [_]
+               (let [st @EState/state
+                     map-name (or (:current-map st) "masara")
+                     saved-pos (when (:current-map st)
+                                 (select-keys (:player st) [:x :y]))]
+                 (-> (W/change-map! map-name nil nil)
+                     (.then (fn [_]
+                              (when saved-pos
+                                (swap! EState/state update :player merge saved-pos))))))))))

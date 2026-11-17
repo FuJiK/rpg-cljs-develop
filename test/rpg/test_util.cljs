@@ -3,9 +3,12 @@
 
 (defn base-state []
   {:player {:x 0 :y 0 :dir :down}
+   :current-map nil
+   :map-name ""
    :map {}
-   :solid-tiles #{1 2}
+   :solid-tiles #{1 2 4}
    :events {}
+   :objects []
    :opened #{}
    :camera {:x 0 :y 0}
    :keys #{}

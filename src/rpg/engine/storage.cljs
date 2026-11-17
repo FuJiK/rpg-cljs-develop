@@ -5,7 +5,7 @@
 (def save-key "rpg.cljs.save.v1")
 
 (defn- pick-savable [st]
-  (select-keys st [:player :opened :inventory :map]))
+  (select-keys st [:player :opened :inventory :current-map]))
 
 (defn save-game! []
   (let [data (pr-str (pick-savable @S/state))]

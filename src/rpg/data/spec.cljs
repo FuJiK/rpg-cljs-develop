@@ -32,6 +32,7 @@
    [:catn [:tag [:= :say]] [:name string?] [:text string?]]
    [:catn [:tag [:= :chest]] [:id Keyword-id] [:payload [:map [:item Keyword-id] [:count pos-int?]]]]
    [:catn [:tag [:= :warp]] [:x int?] [:y int?]]
+   [:catn [:tag [:= :change-map]] [:map-name string?] [:x int?] [:y int?]]
    [:catn [:tag [:= :give-item]] [:item Keyword-id] [:count pos-int?]]])
 
 (def Script [:vector Op])
@@ -42,7 +43,20 @@
 
 (def MapEventAt [:map [:pos Coord] [:event MapEvent]])
 
-(def MapDoc [:map [:tiles [:vector TileTriplet]] [:events [:vector MapEventAt]]])
+(def MapObject
+  [:map
+   [:pos Coord]
+   [:kind keyword?]
+   [:id {:optional true} Keyword-id]])
+
+(def MapDoc
+  [:map
+   [:name {:optional true} string?]
+   [:spawn {:optional true} Coord]
+   [:solid-tiles {:optional true} [:vector int?]]
+   [:tiles [:vector TileTriplet]]
+   [:events {:optional true} [:vector MapEventAt]]
+   [:objects {:optional true} [:vector MapObject]]])
 
 (defn validate! [schema value label]
   (when-not (m/validate schema value)
