@@ -11,6 +11,8 @@
 (defn init []
   (js/console.info "[rpg.main/init] Initializing RPG game...")
   (I/attach!)
+  (when-let [canvas (.getElementById js/document "game")]
+    (.focus canvas))
   (Store/load-game!)
   (js/console.debug "[rpg.main/init] Input and storage systems initialized")
 

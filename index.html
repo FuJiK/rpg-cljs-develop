@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
     <meta charset="utf-8" />
     <title>RPG CLJS with Tests</title>
@@ -45,12 +45,12 @@
     </style>
   </head>
   <body>
-    <div id="hud">←↓↑→ で移動 / Space で会話進行</div>
+    <div id="hud">←↓↑→ で移動 / Space で決定（会話・バトル）</div>
     <div id="dialog">
       <div class="name" id="dlg-name"></div>
       <div class="text" id="dlg-text"></div>
     </div>
-    <canvas id="game" width="640" height="480"></canvas>
+    <canvas id="game" width="640" height="480" tabindex="0"></canvas>
     <script src="js/main.js"></script>
     <!-- ↓ これ（手動init）は入れない。:init-fn が自動実行する -->
     <!-- <script>rpg.main.init()</script> -->

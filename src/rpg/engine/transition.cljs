@@ -3,7 +3,7 @@
             [rpg.engine.battle :as B]))
 
 (defn start-scroll-to-battle! []
-  (swap! S/state assoc :transition {:kind :to-battle
+  (swap! S/state assoc :keys #{} :transition {:kind :to-battle
                                     :phase :out
                                     :t 0
                                     :dur 480}))

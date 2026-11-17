@@ -2,6 +2,7 @@
   (:require [rpg.engine.state :as S]))
 
 (defn show! [name text]
+  (swap! S/state assoc :keys #{})
   (swap! S/state update-in [:dialog :queue] conj {:name name :text text})
   (swap! S/state assoc-in [:dialog :open?] true)
   (when-let [dlg (when (exists? js/document)
