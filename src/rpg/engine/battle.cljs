@@ -18,6 +18,7 @@
   (swap! S/state assoc :pending-battle {:enemy-id enemy-id :return return-pos}))
 
 (defn begin! [{:keys [enemy-id return]}]
+  (swap! S/state assoc :keys #{})
   (let [ps (player-stats)
         tmpl (get-in @S/state [:enemies-by-id (or enemy-id :rival)])
         e-max-hp (max 1 (quot (:max-hp ps) 2))]

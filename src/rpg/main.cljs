@@ -6,11 +6,24 @@
    [rpg.engine.render  :as R]
    [rpg.engine.state   :as S]
    [rpg.engine.storage :as Store]
+   [rpg.engine.reset :as Reset]
    [rpg.scenes.overworld :as OW]))
 
 (defn init []
   (js/console.info "[rpg.main/init] Initializing RPG game...")
   (I/attach!)
+  (when-let [canvas (.getElementById js/document "game")]
+    (.focus canvas))
+  (when-let [btn (.getElementById js/document "btn-reset")]
+    (.addEventListener
+     btn
+     "click"
+     (fn [_]
+       (when (js/confirm "セーブデータを消して、マサラタウンから最初からやり直しますか？")
+         (-> (Reset/reset-game!)
+             (.catch (fn [e]
+                       (js/console.error "[rpg.main] reset failed" e)
+                       (js/alert "リセットに失敗しました。ページを再読み込みしてください。"))))))))
   (Store/load-game!)
   (js/console.debug "[rpg.main/init] Input and storage systems initialized")
 
