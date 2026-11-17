@@ -33,7 +33,8 @@
    [:catn [:tag [:= :chest]] [:id Keyword-id] [:payload [:map [:item Keyword-id] [:count pos-int?]]]]
    [:catn [:tag [:= :warp]] [:x int?] [:y int?]]
    [:catn [:tag [:= :change-map]] [:map-name string?] [:x int?] [:y int?]]
-   [:catn [:tag [:= :give-item]] [:item Keyword-id] [:count pos-int?]]])
+   [:catn [:tag [:= :give-item]] [:item Keyword-id] [:count pos-int?]]
+   [:catn [:tag [:= :start-battle]] [:enemy-id Keyword-id]]])
 
 (def Script [:vector Op])
 

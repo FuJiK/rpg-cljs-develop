@@ -28,6 +28,13 @@
                 :from [0 0]
                 :to   [0 0]}
          :step-count 0            ;; 歩数カウンタ
+         :mode :field             ;; :field | :battle
+         :player-stats {:level 5 :hp 40 :max-hp 40 :attack 12 :defense 4 :skill-power 18}
+         :chase nil
+         :pending-battle nil
+         :transition nil
+         :battle nil
+         :post-battle-scroll nil
          :rng (random-uuid)}))
 
 (defn mark-done! [id] (swap! state update :opened conj id))

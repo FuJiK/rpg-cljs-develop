@@ -1,6 +1,7 @@
 (ns rpg.engine.input
   (:require [rpg.engine.state :as S]
             [rpg.engine.dialog :as D]
+            [rpg.engine.battle :as B]
             [clojure.string :as str]))
 
 ;; OS/ブラウザ差で揺れる key / code / keyCode すべてを吸収
@@ -28,9 +29,19 @@
   (when-let [kw (event->kw e)]
     ;; スクロール等を止める（特に Space / Arrow）
     (.preventDefault e)
-    (when (and pressed? (= kw :accept))
-      (when (get-in @S/state [:dialog :open?])
-        (D/advance!)))
+    (when pressed?
+      (cond
+        (and (= kw :accept) (get-in @S/state [:dialog :open?]))
+        (D/advance!)
+
+        (B/in-battle?)
+        (case kw
+          :up (B/select-menu! (- (get-in @S/state [:battle :menu-idx] 0) 2))
+          :down (B/select-menu! (+ (get-in @S/state [:battle :menu-idx] 0) 2))
+          :left (B/select-menu! (dec (get-in @S/state [:battle :menu-idx] 0)))
+          :right (B/select-menu! (inc (get-in @S/state [:battle :menu-idx] 0)))
+          :accept (B/confirm-menu!)
+          nil)))
     (swap! S/state update :keys (fn [ks]
                                   (if pressed?
                                     (if (= kw :accept) ks (conj ks kw))
