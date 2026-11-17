@@ -1,7 +1,8 @@
 (ns rpg.engine.events
   (:require [rpg.engine.state :as S]
             [rpg.engine.dialog :as D]
-            [rpg.engine.world :as W]))
+            [rpg.engine.world :as W]
+            [rpg.engine.battle :as B]))
 
 (defn register! [x y opts] (swap! S/state assoc-in [:events [x y]] opts))
 
@@ -27,6 +28,12 @@
                       (.catch (fn [e]
                                 (js/console.error "[events] change-map failed" e)
                                 (D/show! "SYSTEM" "マップ切替に失敗した…")))))
+    :start-battle (let [[enemy-id] args]
+                    (B/queue-after-dialog!
+                     (or enemy-id :rival)
+                     {:map (or (:current-map @S/state) "route1")
+                      :x (get-in @S/state [:player :x])
+                      :y (get-in @S/state [:player :y])}))
     (D/show! "SYSTEM" (str "未対応のコマンド: " tag))))
 
 (defn run-script! [ops] (doseq [op ops] (run-op! op)))

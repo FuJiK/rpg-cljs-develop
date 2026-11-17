@@ -18,6 +18,12 @@
    :enemies-by-id {}
    :anim {:active? false :t 0 :dur 120 :from [0 0] :to [0 0]}
    :step-count 0
+   :mode :field
+   :player-stats {:level 5 :hp 40 :max-hp 40 :attack 12 :defense 4 :skill-power 18}
+   :chase nil
+   :pending-battle nil
+   :transition nil
+   :battle nil
    :rng (random-uuid)})
 
 (defn reset-state! []

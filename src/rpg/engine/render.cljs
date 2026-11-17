@@ -1,6 +1,10 @@
 (ns rpg.engine.render
   (:require [rpg.engine.state :as S]
-            [rpg.engine.map :as M]))
+            [rpg.engine.map :as M]
+            [rpg.engine.chase :as CH]
+            [rpg.engine.transition :as TR]
+            [rpg.engine.battle :as B]
+            [rpg.engine.battle-render :as BR]))
 
 (defn tile-color [tid]
   (case tid
@@ -56,10 +60,19 @@
              (.arc ctx (+ sx (/ S/tile-size 2)) (+ sy (/ S/tile-size 2))
                      (- (/ S/tile-size 2) 4) 0 (* 2 Math/PI))
              (.fill ctx))
+      :rival (do
+               (set! (.-fillStyle ctx) "#ef5350")
+               (.fillRect ctx (+ sx 4) (+ sy 4) (- S/tile-size 8) (- S/tile-size 8))
+               (set! (.-fillStyle ctx) "#fff")
+               (set! (.-font ctx) "10px system-ui,sans-serif")
+               (.fillText ctx "R" (+ sx 12) (+ sy 22)))
       nil)))
 
+(defn- all-objects []
+  (into (vec (:objects @S/state)) (or (CH/rival-object) [])))
+
 (defn- draw-objects! [ctx cam-x cam-y]
-  (doseq [{:keys [pos] :as obj} (:objects @S/state)
+  (doseq [{:keys [pos] :as obj} (all-objects)
           :let [[ox oy] pos
                 vx (- ox cam-x)
                 vy (- oy cam-y)]
@@ -67,13 +80,10 @@
                      (<= 0 vy (dec S/view-h)))]
     (draw-object! ctx vx vy obj)))
 
-(defn draw! []
-  (let [canvas (.getElementById js/document "game")
-        ctx (.getContext canvas "2d")
-        [fx fy] (M/interp-pos)
+(defn- draw-field! [ctx canvas]
+  (let [[fx fy] (M/interp-pos)
         cam (:camera @S/state)
         cam-x (:x cam) cam-y (:y cam)]
-    (.clearRect ctx 0 0 (.-width canvas) (.-height canvas))
     (doseq [vy (range S/view-h)
             vx (range S/view-w)]
       (let [tx (+ cam-x vx)
@@ -93,3 +103,31 @@
       (set! (.-lineWidth ctx) 2)
       (.strokeRect ctx (inc sx) (inc sy) (- S/tile-size 2) (- S/tile-size 2)))
     (draw-hud! ctx)))
+
+(defn draw! []
+  (let [canvas (.getElementById js/document "game")
+        ctx (.getContext canvas "2d")
+        w (.-width canvas)
+        h (.-height canvas)]
+    (.clearRect ctx 0 0 w h)
+    (if (B/in-battle?)
+      (BR/draw! ctx)
+      (let [tr (:transition @S/state)
+            scroll-pixels (* (TR/scroll-offset) S/tile-size)]
+        (cond
+          (and tr (= :to-battle (:kind tr)))
+          (do
+            (.save ctx)
+            (.translate ctx 0 (- scroll-pixels))
+            (draw-field! ctx canvas)
+            (.restore ctx))
+
+          (and tr (= :from-battle (:kind tr)))
+          (do
+            (.save ctx)
+            (.translate ctx 0 scroll-pixels)
+            (draw-field! ctx canvas)
+            (.restore ctx))
+
+          :else
+          (draw-field! ctx canvas))))))
