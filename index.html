@@ -17,6 +17,24 @@
         background: rgba(0, 0, 0, 0.6);
         padding: 8px 10px;
         border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        max-width: calc(100vw - 24px);
+      }
+      #btn-reset {
+        font: inherit;
+        font-size: 13px;
+        color: #ffe082;
+        background: #5d4037;
+        border: 1px solid #8d6e63;
+        border-radius: 6px;
+        padding: 6px 10px;
+        cursor: pointer;
+      }
+      #btn-reset:hover {
+        background: #6d4c41;
       }
       #dialog {
         position: fixed;
@@ -45,7 +63,12 @@
     </style>
   </head>
   <body>
-    <div id="hud">←↓↑→ で移動 / Space で決定（会話・バトル）</div>
+    <div id="hud">
+      <span>←↓↑→ で移動 / Space で決定（会話・バトル）</span>
+      <button type="button" id="btn-reset" title="セーブを消してマサラからやり直す">
+        データリセット
+      </button>
+    </div>
     <div id="dialog">
       <div class="name" id="dlg-name"></div>
       <div class="text" id="dlg-text"></div>
