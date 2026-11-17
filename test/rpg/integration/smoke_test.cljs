@@ -2,9 +2,11 @@
   (:require [cljs.test :refer [deftest is async use-fixtures]]
             ["fs" :as fs]
             ["path" :as path]
+            [cljs.reader :as rdr]
             [rpg.data.loader :as L]
             [rpg.engine.map :as M]
             [rpg.engine.state :as S]
+            [rpg.engine.world :as W]
             [rpg.test-util :as TU]))
 
 (use-fixtures :each {:before TU/reset-state!})
@@ -21,21 +23,24 @@
               (cond
                 (= path "/data/items.edn") (read-text-file "data/items.edn")
                 (= path "/data/enemies.edn") (read-text-file "data/enemies.edn")
+                (= path "/data/maps/masara.edn") (read-text-file "data/maps/masara.edn")
                 (= path "/data/maps/overworld.edn") (read-text-file "data/maps/overworld.edn")
                 :else (throw (js/Error. (str "unexpected fetch path: " path))))))})))
 
 (deftest load-all-with-committed-edn
   (async done
     (with-redefs [js/fetch fetch-from-disk]
-      (.then (L/load-all!)
+      (.then (js/Promise.all #js [(L/load-items!) (L/load-enemies!)])
              (fn [_]
+               (W/apply-map! (rdr/read-string (read-text-file "data/maps/masara.edn")) "masara")
                (is (contains? (:items-by-id @S/state) :potion))
                (is (contains? (:items-by-id @S/state) :hi-potion))
                (is (contains? (:enemies-by-id @S/state) :slime))
                (is (contains? (:enemies-by-id @S/state) :goblin))
-               (is (= :event/hello (get-in @S/state [:events [0 0] :id])))
-               (is (= :chest-001 (get-in @S/state [:events [2 0] :id])))
-               (is (= 3 (M/get-tile [0 3])))
+               (is (= "masara" (:current-map @S/state)))
+               (is (= :chest-001 (get-in @S/state [:events [12 10] :id])))
+               (is (= 3 (M/get-tile [10 3])))
+               (is (pos? (count (:objects @S/state))))
                (done))))))
 
 (deftest static-app-assets-exist

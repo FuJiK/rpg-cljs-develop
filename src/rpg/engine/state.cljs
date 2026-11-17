@@ -4,11 +4,16 @@
 (def view-w 20)
 (def view-h 15)
 
+(def default-solid-tiles #{1 2 4})
+
 (defonce state
   (atom {:player {:x 0 :y 0 :dir :down}
+         :current-map nil
+         :map-name ""
          :map {}
-         :solid-tiles #{1 2}
+         :solid-tiles default-solid-tiles
          :events {}
+         :objects []
          :opened #{}
          :camera {:x 0 :y 0}
          :keys #{}

@@ -12,13 +12,13 @@
            :player {:x 5 :y 7 :dir :up}
            :opened #{:chest-001}
            :inventory {:potion 2}
-           :map {[0 0] 3})
+           :current-map "masara")
     (Store/save-game!)
     (TU/reset-state!)
     (Store/load-game!)
     (is (= {:x 5 :y 7 :dir :up} (:player @S/state)))
     (is (= #{:chest-001} (:opened @S/state)))
     (is (= {:potion 2} (:inventory @S/state)))
-    (is (= {[0 0] 3} (:map @S/state)))
+    (is (= "masara" (:current-map @S/state)))
     (finally
       (set! js/localStorage js/undefined))))

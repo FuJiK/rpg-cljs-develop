@@ -1,6 +1,7 @@
 (ns rpg.engine.events
   (:require [rpg.engine.state :as S]
-            [rpg.engine.dialog :as D]))
+            [rpg.engine.dialog :as D]
+            [rpg.engine.world :as W]))
 
 (defn register! [x y opts] (swap! S/state assoc-in [:events [x y]] opts))
 
@@ -21,6 +22,11 @@
             (swap! S/state assoc-in [:player :x] x)
             (swap! S/state assoc-in [:player :y] y)
             (D/show! "SYSTEM" (str "ワープ！ (" x "," y ")")))
+    :change-map (let [[map-name x y] args]
+                  (-> (W/change-map! map-name x y)
+                      (.catch (fn [e]
+                                (js/console.error "[events] change-map failed" e)
+                                (D/show! "SYSTEM" "マップ切替に失敗した…")))))
     (D/show! "SYSTEM" (str "未対応のコマンド: " tag))))
 
 (defn run-script! [ops] (doseq [op ops] (run-op! op)))

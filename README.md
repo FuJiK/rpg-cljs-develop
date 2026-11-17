@@ -157,7 +157,7 @@ rpg-cljs/
 ## 今後の拡張アイデア
 
 - 戦闘シーン：`[:battle :slime]` DSL と `engine/battle.cljs` / `scenes/battle.cljs`
-- マップ切替・複数エリア：`maps/xxx.edn` を増やし `load-map!` で動的読み込み
+- マップ切替：`[:change-map "route1" 10 26]` DSL と `data/maps/*.edn`（起動マップは `masara`）
 - プロパティテスト（test.check）で移動・衝突の性質検査
 - サーバ保存（Transit/JSON）／UGC配布／ランキング・実績
 
