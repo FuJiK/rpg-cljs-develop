@@ -1,0 +1,63 @@
+name: Deploy game to AWS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/ci.yml'
+      - '.github/workflows/deploy-game.yml'
+      - 'data/**'
+      - 'scripts/smoke-game.mjs'
+      - 'src/**'
+      - 'test/**'
+      - 'index.html'
+      - 'package*.json'
+      - 'shadow-cljs.edn'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: aws-game-release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main' && vars.AWS_GAME_DEPLOY_ROLE_ARN != '' && vars.AWS_GAME_BUCKET != '' && vars.AWS_GAME_URL != ''
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: rpg-game
+          path: release
+
+      - uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ vars.AWS_GAME_DEPLOY_ROLE_ARN }}
+          aws-region: ap-northeast-1
+
+      - name: Publish game
+        env:
+          BUCKET: ${{ vars.AWS_GAME_BUCKET }}
+        run: |
+          aws s3 cp release/data/ "s3://${BUCKET}/data/" --recursive --only-show-errors
+          aws s3 cp release/js/ "s3://${BUCKET}/js/" --recursive --only-show-errors
+          aws s3 cp release/index.html "s3://${BUCKET}/index.html" --only-show-errors
+
+      - name: Verify the published build
+        env:
+          GAME_URL: ${{ vars.AWS_GAME_URL }}
+        run: |
+          for asset in index.html js/main.js data/maps/akari-village.edn data/maps/windpass.edn; do
+            curl --fail --silent --show-error --retry 3 --max-time 30 "${GAME_URL%/}/${asset}" -o "${RUNNER_TEMP}/rpg-published"
+            cmp "release/${asset}" "${RUNNER_TEMP}/rpg-published"
+          done

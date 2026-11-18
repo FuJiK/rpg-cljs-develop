@@ -1,0 +1,35 @@
+name: CDK CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/infra.yml'
+      - 'infra/**'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/infra.yml'
+      - 'infra/**'
+
+permissions:
+  contents: read
+
+jobs:
+  synth:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: infra/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run synth
