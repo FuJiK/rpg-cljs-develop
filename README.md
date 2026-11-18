@@ -4,7 +4,7 @@
 - Canvas 2Dで描画（プレイヤー移動／座標イベント／会話／宝箱／ワープ）
 - データ駆動（EDNでタイル・イベント定義、Malliでスキーマ検証）
 - セーブ／ロード（`localStorage`）
-- ユニットテスト（Node）＋ブラウザ結合テスト（shadowのbrowser-test）
+- ユニットテスト（Node）＋ E2E（Playwright）＋ shadow の browser-test（任意）
 
 詳細なアーキテクチャ説明は [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) を参照してください。
 
@@ -39,9 +39,10 @@ npm run build
 
 - `npm run test:ci` — Node 上のエンジン・EDN・マップ切替テスト
 - `npm run build` — 本番ビルド
-- ゲーム起動に必要な静的ファイルの存在チェック
+- 静的アセットの存在チェック
+- `npm run test:e2e` — Playwright（起動・移動・会話・リセット・windpass）
 
-キー入力や Canvas のブラウザ E2E は未含み（Playwright 等で拡張可能）。
+詳細は [docs/E2E.md](docs/E2E.md)。
 
 ### 6) テスト
 - 純ロジック（Node）
@@ -56,7 +57,13 @@ npx shadow-cljs compile node-test && node out/node-test.js
   - `test/rpg/engine/events_test.cljs` — イベント DSL（宝箱・付与・ワープ）
   - `test/rpg/engine/map_test.cljs` — 移動開始・当たり判定
   - `test/rpg/scenes/loader_test.cljs` — ローダー（fetch モック）
-- ブラウザ結合（起動してHTMLを開く）
+- E2E（Playwright・本番ビルド必須）
+```bash
+npm run build
+npx playwright install chromium   # 初回のみ
+npm run test:e2e
+```
+- shadow ブラウザ結合（cljs.test・開発用）
 ```bash
 npm run test:browser:watch
 # out/browser-test/index.html をブラウザで開く

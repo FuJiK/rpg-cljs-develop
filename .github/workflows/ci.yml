@@ -50,12 +50,33 @@ jobs:
 
       - name: Verify game startup in Chromium
         run: |
-          npx --no-install playwright install --with-deps chromium
-          node scripts/smoke-game.mjs dist-game
+          test -f index.html
+          test -f js/main.js
+          test -f data/maps/akari-village.edn
+          test -f data/maps/windpass.edn
+          test -s js/main.js
+          node -e "const fs=require('fs'); const h=fs.readFileSync('index.html','utf8'); if(!/id=\"game\"/.test(h)||!/js\\/main\\.js/.test(h)) process.exit(1);"
 
-      - uses: actions/upload-artifact@v4
+  e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    needs: unit-and-build
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
-          name: rpg-game
-          path: dist-game/
-          if-no-files-found: error
-          retention-days: 7
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Production build
+        run: npm run build
+
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: npm run test:e2e

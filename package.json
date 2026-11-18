@@ -2,7 +2,8 @@
   "name": "rpg-cljs",
   "private": true,
   "devDependencies": {
-    "playwright": "1.65.1",
+    "@playwright/test": "^1.49.0",
+    "serve": "^14.2.4",
     "shadow-cljs": "^2.28.15"
   },
   "scripts": {
@@ -12,6 +13,8 @@
     "test:node": "shadow-cljs run shadow.cljs.build-report app build-report.html && shadow-cljs compile node-test && node out/node-test.js",
     "test:ci": "shadow-cljs compile node-test && node out/node-test.js",
     "test:browser:watch": "shadow-cljs watch browser-test",
-    "test:browser:once": "shadow-cljs compile browser-test"
+    "test:browser:once": "shadow-cljs compile browser-test",
+    "test:e2e": "playwright test",
+    "test:all": "npm run test:ci && npm run build && npm run test:e2e"
   }
 }

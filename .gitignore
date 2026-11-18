@@ -2,5 +2,6 @@
 node_modules/
 js/cljs-runtime/
 .clj-kondo/
-
-/dist-game/
+/test-results/
+/playwright-report/
+/playwright/.cache/
