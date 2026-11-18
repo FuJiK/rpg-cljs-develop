@@ -30,8 +30,8 @@
                                 (D/show! "SYSTEM" "マップ切替に失敗した…")))))
     :start-battle (let [[enemy-id] args]
                     (B/queue-after-dialog!
-                     (or enemy-id :rival)
-                     {:map (or (:current-map @S/state) "route1")
+                     (or enemy-id :patrol)
+                     {:map (or (:current-map @S/state) "windpass")
                       :x (get-in @S/state [:player :x])
                       :y (get-in @S/state [:player :y])}))
     (D/show! "SYSTEM" (str "未対応のコマンド: " tag))))

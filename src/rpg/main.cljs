@@ -19,7 +19,7 @@
      btn
      "click"
      (fn [_]
-       (when (js/confirm "セーブデータを消して、マサラタウンから最初からやり直しますか？")
+       (when (js/confirm "セーブデータを消して、灯ノ里から最初からやり直しますか？")
          (-> (Reset/reset-game!)
              (.catch (fn [e]
                        (js/console.error "[rpg.main] reset failed" e)

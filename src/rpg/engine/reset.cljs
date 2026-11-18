@@ -33,7 +33,7 @@
 
 (defn reset-game! []
   (clear-progress!)
-  (-> (W/change-map! "masara" nil nil)
+  (-> (W/change-map! "akari-village" nil nil)
       (.then
        (fn [_]
          (when-let [dlg (when (exists? js/document)

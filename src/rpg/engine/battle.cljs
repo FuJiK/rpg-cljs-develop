@@ -20,12 +20,12 @@
 (defn begin! [{:keys [enemy-id return]}]
   (swap! S/state assoc :keys #{})
   (let [ps (player-stats)
-        tmpl (get-in @S/state [:enemies-by-id (or enemy-id :rival)])
+        tmpl (get-in @S/state [:enemies-by-id (or enemy-id :patrol)])
         e-max-hp (max 1 (quot (:max-hp ps) 2))]
     (swap! S/state assoc
            :mode :battle
-           :battle {:enemy-id (or enemy-id :rival)
-                    :enemy-name (:name tmpl "ライバル")
+           :battle {:enemy-id (or enemy-id :patrol)
+                    :enemy-name (:name tmpl "巡回役")
                     :enemy-hp e-max-hp
                     :enemy-max-hp e-max-hp
                     :enemy-attack (or (:attack tmpl) 2)
@@ -37,7 +37,7 @@
 
 (defn- return-pos []
   (let [{:keys [return]} (:battle @S/state)]
-    (or return {:map (or (:current-map @S/state) "route1")
+    (or return {:map (or (:current-map @S/state) "windpass")
                 :x (get-in @S/state [:player :x])
                 :y (get-in @S/state [:player :y])})))
 
@@ -120,6 +120,6 @@
                          (swap! S/state assoc-in [:battle :message] nil)))
                      600))
                 (set-msg! "使える道具がない…"))
-        :run (set-msg! "ライバルに逃げ切れない！")))))
+        :run (set-msg! "巡回役との腕試しはまだ終わっていない！")))))
 
 (defn tick! [_dt] nil)

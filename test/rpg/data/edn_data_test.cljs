@@ -28,11 +28,11 @@
       (is (pos? (count (:events m))))
       (is (some #(= (:pos %) [2 0]) (:events m))))))
 
-(deftest committed-masara-edn-validates
-  (let [m (read-edn-file "data/maps/masara.edn")]
+(deftest committed-akari-village-edn-validates
+  (let [m (read-edn-file "data/maps/akari-village.edn")]
     (is (= m (Spec/validate! Spec/MapDoc m "MapDoc")))
-    (is (= "マサラタウン" (:name m)))))
+    (is (= "灯ノ里" (:name m)))))
 
-(deftest committed-route1-edn-validates
-  (is (= (read-edn-file "data/maps/route1.edn")
-         (Spec/validate! Spec/MapDoc (read-edn-file "data/maps/route1.edn") "MapDoc"))))
+(deftest committed-windpass-edn-validates
+  (is (= (read-edn-file "data/maps/windpass.edn")
+         (Spec/validate! Spec/MapDoc (read-edn-file "data/maps/windpass.edn") "MapDoc"))))

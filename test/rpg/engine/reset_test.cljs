@@ -8,7 +8,7 @@
   (TU/reset-state!)
   (set! js/localStorage (TU/mock-local-storage))
   (swap! S/state assoc
-         :opened #{:rival/encounter :chest-001}
+         :opened #{:patrol/encounter :chest-001}
          :inventory {:potion 2}
          :player-stats {:hp 12 :max-hp 40}
          :mode :battle)

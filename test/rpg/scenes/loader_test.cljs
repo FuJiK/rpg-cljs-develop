@@ -32,10 +32,10 @@
                                  :text (fn [] (js/Promise.resolve body))}))))]
       (.then (js/Promise.all #js [(L/load-items!) (L/load-enemies!)])
              (fn [_]
-               (W/apply-map! (rdr/read-string sample-map) "masara")
+               (W/apply-map! (rdr/read-string sample-map) "akari-village")
                (is (= 3 (M/get-tile [0 0])))
                (is (= 1 (M/get-tile [1 0])))
-               (is (= "masara" (:current-map @S/state)))
+               (is (= "akari-village" (:current-map @S/state)))
                (is (contains? (:items-by-id @S/state) :potion))
                (is (contains? (:enemies-by-id @S/state) :slime))
                (done))))))

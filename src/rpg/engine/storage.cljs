@@ -11,11 +11,23 @@
   (let [data (pr-str (pick-savable @S/state))]
     (.setItem js/localStorage save-key data)))
 
+(def ^:private legacy-map-ids
+  {"masara" "akari-village"
+   "route1" "windpass"})
+
+(defn- migrate-save [data]
+  (cond-> data
+    (contains? legacy-map-ids (:current-map data))
+    (update :current-map legacy-map-ids)
+
+    (contains? (:opened data) :rival/encounter)
+    (update :opened #(-> % (disj :rival/encounter) (conj :patrol/encounter)))))
+
 (defn load-game! []
   (when-let [txt (.getItem js/localStorage save-key)]
     (try
       (let [data (rdr/read-string txt)]
-        (swap! S/state merge data))
+        (swap! S/state merge (migrate-save data)))
       (catch :default _e nil))))
 
 (defn clear-save! [] (.removeItem js/localStorage save-key))

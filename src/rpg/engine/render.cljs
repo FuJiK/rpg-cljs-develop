@@ -60,7 +60,7 @@
              (.arc ctx (+ sx (/ S/tile-size 2)) (+ sy (/ S/tile-size 2))
                      (- (/ S/tile-size 2) 4) 0 (* 2 Math/PI))
              (.fill ctx))
-      :rival (do
+      :patrol (do
                (set! (.-fillStyle ctx) "#ef5350")
                (.fillRect ctx (+ sx 4) (+ sy 4) (- S/tile-size 8) (- S/tile-size 8))
                (set! (.-fillStyle ctx) "#fff")
@@ -69,7 +69,7 @@
       nil)))
 
 (defn- all-objects []
-  (into (vec (:objects @S/state)) (or (CH/rival-object) [])))
+  (into (vec (:objects @S/state)) (or (CH/patrol-object) [])))
 
 (defn- draw-objects! [ctx cam-x cam-y]
   (doseq [{:keys [pos] :as obj} (all-objects)

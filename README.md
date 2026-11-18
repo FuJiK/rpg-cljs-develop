@@ -148,7 +148,7 @@ rpg-cljs/
 │  │  ├─ input.cljs           # キー入力
 │  │  ├─ map.cljs             # 移動・当たり判定
 │  │  ├─ dialog.cljs          # ダイアログUI（簡易）
-│  │  ├─ events.cljs          # ツクール風DSL（:say :chest :warp :give-item）
+│  │  ├─ events.cljs          # 座標イベントDSL（:say :chest :warp :give-item）
 │  │  ├─ render.cljs          # Canvas描画
 │  │  ├─ loop.cljs            # ゲームループ
 │  │  └─ storage.cljs         # localStorage セーブ／ロード
@@ -172,7 +172,7 @@ rpg-cljs/
 ## 今後の拡張アイデア
 
 - 戦闘シーン：`[:battle :slime]` DSL と `engine/battle.cljs` / `scenes/battle.cljs`
-- マップ切替：`[:change-map "route1" 10 26]` DSL と `data/maps/*.edn`（起動マップは `masara`）
+- マップ切替：`[:change-map "windpass" 10 26]` DSL と `data/maps/*.edn`（起動マップは `akari-village`）
 - プロパティテスト（test.check）で移動・衝突の性質検査
 - サーバ保存（Transit/JSON）／UGC配布／ランキング・実績
 

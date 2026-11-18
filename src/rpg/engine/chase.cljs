@@ -2,12 +2,12 @@
   (:require [rpg.engine.state :as S]
             [rpg.engine.events :as EV]))
 
-(defn rivals-map? []
-  (= "route1" (:current-map @S/state)))
+(defn patrol-map? []
+  (= "windpass" (:current-map @S/state)))
 
 (defn chase-active? []
-  (and rivals-map?
-       (not (S/done? :rival/encounter))
+  (and patrol-map?
+       (not (S/done? :patrol/encounter))
        (true? (get-in @S/state [:chase :active?]))))
 
 (defn- player-y [] (get-in @S/state [:player :y]))
@@ -19,38 +19,38 @@
       (= :battle (:mode @S/state))))
 
 (defn maybe-arm-chase! []
-  (when (and rivals-map?
-             (not (S/done? :rival/encounter))
+  (when (and patrol-map?
+             (not (S/done? :patrol/encounter))
              (<= (player-y) 24)
              (not (chase-active?))
              (nil? (:chase @S/state)))
     (swap! S/state assoc :chase {:active? true
-                                 :rival-x 11
-                                 :rival-y (+ (player-y) 3)})))
+                                 :patrol-x 11
+                                 :patrol-y (+ (player-y) 3)})))
 
-(defn rival-object []
+(defn patrol-object []
   (when (chase-active?)
-    (let [{:keys [rival-x rival-y]} (:chase @S/state)]
-      [{:pos [rival-x rival-y] :kind :rival :id :rival/youngster}])))
+    (let [{:keys [patrol-x patrol-y]} (:chase @S/state)]
+      [{:pos [patrol-x patrol-y] :kind :patrol :id :patrol/keeper}])))
 
 (defn- trigger-encounter! []
-  (when-not (S/done? :rival/encounter)
-    (S/mark-done! :rival/encounter)
+  (when-not (S/done? :patrol/encounter)
+    (S/mark-done! :patrol/encounter)
     (swap! S/state dissoc :chase)
     (EV/run-script!
-     [[:say "???（ライバル）" "待て！そこまでだ！"]
-      [:say "ライバル" "今のうちに決着をつけるぞ！"]
-      [:start-battle :rival]])))
+     [[:say "巡回役" "風見塔へ行くのか？　今は風が強くてな。"]
+      [:say "巡回役" "塔まで行くなら、まずここで足さばきを見せてくれ。"]
+      [:start-battle :patrol]])))
 
 (defn on-player-stepped! []
-  (when (S/done? :rival/encounter)
+  (when (S/done? :patrol/encounter)
     (swap! S/state dissoc :chase))
-  (when-not (S/done? :rival/encounter)
+  (when-not (S/done? :patrol/encounter)
     (maybe-arm-chase!)
     (when (and (chase-active?) (not (encounter-blocked?)))
       (let [py (player-y)
-            {:keys [rival-y] :as ch} (:chase @S/state)
-            new-ry (max py (dec rival-y))]
-        (swap! S/state assoc :chase (assoc ch :rival-y new-ry))
+            {:keys [patrol-y] :as ch} (:chase @S/state)
+            new-ry (max py (dec patrol-y))]
+        (swap! S/state assoc :chase (assoc ch :patrol-y new-ry))
         (when (<= new-ry py)
           (trigger-encounter!))))))

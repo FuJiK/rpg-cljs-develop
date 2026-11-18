@@ -1,4 +1,4 @@
-{:name "マサラタウン"
+{:name "灯ノ里"
  :spawn [10 9]
  :solid-tiles [1 2 4]
  :tiles
@@ -24,14 +24,14 @@
  :events
  [{:pos [10 3]
    :event {:id :exit/north :once? false
-           :script [[:say "看板" "北の１番道路へ進む"]
-                    [:change-map "route1" 10 26]]}}
+           :script [[:say "看板" "北門の先は風渡りの街道"]
+                    [:change-map "windpass" 10 26]]}}
   {:pos [12 10]
    :event {:id :chest-001 :once? true
            :script [[:chest :chest-001 {:item :potion :count 1}]]}}
   {:pos [6 9]
    :event {:id :sign/town :once? false
-           :script [[:say "看板" "ここはマサラタウン。北へ進むと１番道路へ出られる。"]]}}
+           :script [[:say "看板" "ここは灯ノ里。北へ進むと風渡りの街道へ出られる。"]]}}
   {:pos [7 6]
-   :event {:id :npc/mom :once? false
-           :script [[:say "ママ" "外に出るなら気をつけてね。"]]}}]}
+   :event {:id :npc/guide :once? false
+           :script [[:say "案内人" "街道の風見塔へ向かうなら、北の門を抜けると近いよ。"]]}}]}

@@ -23,7 +23,7 @@
               (cond
                 (= path "/data/items.edn") (read-text-file "data/items.edn")
                 (= path "/data/enemies.edn") (read-text-file "data/enemies.edn")
-                (= path "/data/maps/masara.edn") (read-text-file "data/maps/masara.edn")
+                (= path "/data/maps/akari-village.edn") (read-text-file "data/maps/akari-village.edn")
                 (= path "/data/maps/overworld.edn") (read-text-file "data/maps/overworld.edn")
                 :else (throw (js/Error. (str "unexpected fetch path: " path))))))})))
 
@@ -32,12 +32,12 @@
     (with-redefs [js/fetch fetch-from-disk]
       (.then (js/Promise.all #js [(L/load-items!) (L/load-enemies!)])
              (fn [_]
-               (W/apply-map! (rdr/read-string (read-text-file "data/maps/masara.edn")) "masara")
+               (W/apply-map! (rdr/read-string (read-text-file "data/maps/akari-village.edn")) "akari-village")
                (is (contains? (:items-by-id @S/state) :potion))
                (is (contains? (:items-by-id @S/state) :hi-potion))
                (is (contains? (:enemies-by-id @S/state) :slime))
                (is (contains? (:enemies-by-id @S/state) :goblin))
-               (is (= "masara" (:current-map @S/state)))
+               (is (= "akari-village" (:current-map @S/state)))
                (is (= :chest-001 (get-in @S/state [:events [12 10] :id])))
                (is (= 3 (M/get-tile [10 3])))
                (is (pos? (count (:objects @S/state))))

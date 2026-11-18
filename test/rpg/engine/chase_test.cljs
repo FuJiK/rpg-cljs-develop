@@ -6,11 +6,11 @@
 
 (deftest encounter-fires-only-once
   (TU/reset-state!)
-  (swap! S/state assoc :current-map "route1"
+  (swap! S/state assoc :current-map "windpass"
          :player {:x 10 :y 20 :dir :up}
-         :chase {:active? true :rival-x 10 :rival-y 20})
+         :chase {:active? true :patrol-x 10 :patrol-y 20})
   (CH/on-player-stepped!)
-  (is (S/done? :rival/encounter))
+  (is (S/done? :patrol/encounter))
   (is (get-in @S/state [:dialog :open?]))
   (let [q (count (get-in @S/state [:dialog :queue]))]
     (CH/on-player-stepped!)
