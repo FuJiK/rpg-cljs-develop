@@ -25,13 +25,17 @@
                         (set st)
                         S/default-solid-tiles)
          :objects (vec (or (:objects m) [])))
+  (when (not= map-id "windpass")
+    (swap! S/state dissoc :chase))
   (doseq [[x y tid] (:tiles m)] (M/set-tile! [x y] tid))
   (doseq [{:keys [pos event]} (or (:events m) [])]
     (let [[x y] pos]
       (Spec/validate! Spec/MapEvent event "MapEvent")
       (swap! S/state assoc-in [:events [x y]] event)))
   (when-let [banner (:name m)]
-    (D/show! "場所" banner))
+    (when-not (and (exists? js/window)
+                   (true? (.-__RPG_E2E__ js/window)))
+      (D/show! "場所" banner)))
   m)
 
 (defn load-map! [name]

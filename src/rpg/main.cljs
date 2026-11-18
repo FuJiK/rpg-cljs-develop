@@ -7,10 +7,12 @@
    [rpg.engine.state   :as S]
    [rpg.engine.storage :as Store]
    [rpg.engine.reset :as Reset]
+   [rpg.e2e :as E2E]
    [rpg.scenes.overworld :as OW]))
 
 (defn init []
   (js/console.info "[rpg.main/init] Initializing RPG game...")
+  (E2E/install!)
   (I/attach!)
   (when-let [canvas (.getElementById js/document "game")]
     (.focus canvas))
@@ -46,7 +48,8 @@
                (js/console.log "[rpg.main/init] data loaded, start loop")
                (L/step!)
                (let [{:keys [x y]} (:player @S/state)]
-                 (EV/trigger-at! x y))))
+                 (EV/trigger-at! x y))
+               (E2E/mark-ready!)))
       (.catch (fn [err]
                 (js/console.error "[rpg.main/init] data loading failed:" err)
                 ;; フォールバック処理: デフォルトマップで開始

@@ -45,7 +45,10 @@
 (defn on-player-stepped! []
   (when (S/done? :patrol/encounter)
     (swap! S/state dissoc :chase))
-  (when-not (S/done? :patrol/encounter)
+  (when-not (patrol-map?)
+    (swap! S/state dissoc :chase))
+  (when (and (patrol-map?)
+             (not (S/done? :patrol/encounter)))
     (maybe-arm-chase!)
     (when (and (chase-active?) (not (encounter-blocked?)))
       (let [py (player-y)
