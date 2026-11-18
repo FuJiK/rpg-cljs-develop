@@ -37,7 +37,7 @@
   (-> (js/Promise.all #js [(load-items!) (load-enemies!)])
       (.then (fn [_]
                (let [st @EState/state
-                     map-name (or (:current-map st) "masara")
+                     map-name (or (:current-map st) "akari-village")
                      saved-pos (when (:current-map st)
                                  (select-keys (:player st) [:x :y]))]
                  (-> (W/change-map! map-name nil nil)

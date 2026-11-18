@@ -2,7 +2,7 @@
 
 ## プロジェクトの目的
 
-**rpg-cljs** は **ClojureScript だけで動く 2D RPG の学習・拡張用スキャフォールド** です。RPGツクール風のイベント DSL、データ駆動設計、テスト可能なエンジン分離を意識した構成になっています。
+**rpg-cljs** は **ClojureScript だけで動く 2D RPG の学習・拡張用スキャフォールド** です。座標ベースののイベント DSL、データ駆動設計、テスト可能なエンジン分離を意識した構成になっています。
 
 ブラウザ上で Canvas に描画され、React 等の UI フレームワークは使わず、素の DOM + Canvas 2D で動作します。
 
@@ -106,7 +106,7 @@ flowchart TB
 - `tiles` — `[x y tileId]` のタイル配置
 - `events` — 座標に紐づくイベント定義
 
-### 4. RPGツクール風イベント DSL
+### 4. 座標ベースのイベント DSL
 
 [`src/rpg/engine/events.cljs`](../src/rpg/engine/events.cljs) が座標ベースのイベントを解釈します。
 

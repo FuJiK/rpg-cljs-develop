@@ -1,4 +1,4 @@
-{:name "１番道路"
+{:name "風渡りの街道"
  :spawn [10 26]
  :solid-tiles [1 2]
  :tiles
@@ -25,9 +25,9 @@
  [{:pos [10 27] :kind :gate}]
  :events
  [{:pos [10 27]
-   :event {:id :exit/south-masara :once? false
-           :script [[:say "看板" "マサラタウンへ戻る"]
-                    [:change-map "masara" 10 10]]}}
+   :event {:id :exit/south-akari-village :once? false
+           :script [[:say "看板" "灯ノ里へ戻る"]
+                    [:change-map "akari-village" 10 10]]}}
   {:pos [10 0]
-   :event {:id :route1/north-end :once? false
+   :event {:id :windpass/north-end :once? false
            :script [[:say "看板" "この先はまだ工事中だ…"]]}}]}

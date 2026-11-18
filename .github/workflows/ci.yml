@@ -35,7 +35,7 @@ jobs:
         run: |
           test -f index.html
           test -f js/main.js
-          test -f data/maps/masara.edn
-          test -f data/maps/route1.edn
+          test -f data/maps/akari-village.edn
+          test -f data/maps/windpass.edn
           test -s js/main.js
           node -e "const fs=require('fs'); const h=fs.readFileSync('index.html','utf8'); if(!/id=\"game\"/.test(h)||!/js\\/main\\.js/.test(h)) process.exit(1);"
