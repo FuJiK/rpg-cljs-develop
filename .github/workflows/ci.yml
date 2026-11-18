@@ -1,41 +1,61 @@
-name: CI
+name: Game CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
+    paths:
+      - '.github/workflows/ci.yml'
+      - '.github/workflows/deploy-game.yml'
+      - 'data/**'
+      - 'scripts/smoke-game.mjs'
+      - 'src/**'
+      - 'test/**'
+      - 'index.html'
+      - 'package*.json'
+      - 'shadow-cljs.edn'
+  workflow_call:
 
-concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+permissions:
+  contents: read
 
 jobs:
   unit-and-build:
-    name: ClojureScript tests and production build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '22'
           cache: npm
+          cache-dependency-path: package-lock.json
 
-      - name: Install dependencies
-        run: npm ci
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
 
-      - name: Run Node tests (engine, EDN, map switch)
-        run: npm run test:ci
+      - run: npm ci
+      - run: npm run test:ci
+      - run: npm run build
 
-      - name: Production build
-        run: npm run build
-
-      - name: Verify game entry assets
+      - name: Package production build
         run: |
-          test -f index.html
-          test -f js/main.js
-          test -f data/maps/akari-village.edn
-          test -f data/maps/windpass.edn
-          test -s js/main.js
-          node -e "const fs=require('fs'); const h=fs.readFileSync('index.html','utf8'); if(!/id=\"game\"/.test(h)||!/js\\/main\\.js/.test(h)) process.exit(1);"
+          mkdir -p dist-game/js
+          cp index.html dist-game/
+          cp js/main.js dist-game/js/
+          cp -r data dist-game/
+
+      - name: Verify game startup in Chromium
+        run: |
+          npx --no-install playwright install --with-deps chromium
+          node scripts/smoke-game.mjs dist-game
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rpg-game
+          path: dist-game/
+          if-no-files-found: error
+          retention-days: 7
